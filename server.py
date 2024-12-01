@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
-
+model = tf.keras.models.load_model('src/model/model.keras')
 os.makedirs('src/uploads', exist_ok=True)
 def preprocess_image(image_path):
   img = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
@@ -47,7 +47,6 @@ def predict():
     return jsonify({'predicted_class': predic})
 
 if __name__ == '__main__':
-    model = tf.keras.models.load_model('src/model/model.keras')
     if os.getenv("ENVIRONMENT") == 'dev':
       app.run(debug=True)
     elif os.getenv("ENVIRONMENT") == 'prod':
