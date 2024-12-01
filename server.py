@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
+os.makedirs('src/uploads', exist_ok=True)
 def preprocess_image(image_path):
   img = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
   img = tf.keras.preprocessing.image.img_to_array(img)
@@ -29,7 +30,7 @@ def predict():
 
   if file:
     filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    filepath = os.path.join('src/uploads', filename)
     file.save(filepath)
 
    
@@ -46,9 +47,6 @@ def predict():
     return jsonify({'predicted_class': predic})
 
 if __name__ == '__main__':
-    print(os.getenv("ENVIRONMENT"))
-    app.config['UPLOAD_FOLDER'] = 'src/uploads'
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     model = tf.keras.models.load_model('src/model/model.keras')
     if os.getenv("ENVIRONMENT") == 'dev':
       app.run(debug=True)
