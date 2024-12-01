@@ -11,17 +11,15 @@ import os
 app = Flask(__name__)
 
 def preprocess_image(image_path):
-  img = tf.keras.preprocessing.image.load_img(image_path, target_size=(150, 150))
+  img = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
   img = tf.keras.preprocessing.image.img_to_array(img)
   img = np.expand_dims(img, axis=0)
 
   img /= 255.0
-  print(img.shape)
   return img
 
 @app.route('/predict', methods=['POST'])
 def predict():
-  print(request.files)
   if 'image' not in request.files:
     return jsonify({'error': 'No file part'})
 
@@ -50,7 +48,7 @@ def predict():
 if __name__ == '__main__':
     app.config['UPLOAD_FOLDER'] = 'src/uploads'
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    model = tf.keras.models.load_model('src/model/model.h5')
+    model = tf.keras.models.load_model('src/model/model.keras')
     if os.getenv("ENVIRONMENT") == 'dev':
       app.run(debug=True)
     elif os.getenv("ENVIRONMENT") == 'prod':
