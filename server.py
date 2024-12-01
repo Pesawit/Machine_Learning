@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -5,7 +6,6 @@ from flask import Flask, jsonify, request
 import tensorflow as tf
 import numpy as np
 from werkzeug.utils import secure_filename
-import os
 
 
 app = Flask(__name__)
@@ -46,6 +46,7 @@ def predict():
     return jsonify({'predicted_class': predic})
 
 if __name__ == '__main__':
+    print(os.getenv("ENVIRONMENT"))
     app.config['UPLOAD_FOLDER'] = 'src/uploads'
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     model = tf.keras.models.load_model('src/model/model.keras')
@@ -54,4 +55,4 @@ if __name__ == '__main__':
     elif os.getenv("ENVIRONMENT") == 'prod':
       app.run()
     else:
-      print("environment not available")
+      raise Exception("Environmet not valid : ",os.getenv("ENVIRONMENT"))
