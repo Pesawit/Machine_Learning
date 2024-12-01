@@ -1,5 +1,5 @@
 # Base Image
-FROM continuumio/miniconda3:main
+FROM python:3.12.6
 
 # Set the working directory inside the container
 WORKDIR /app
