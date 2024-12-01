@@ -19,12 +19,19 @@ def preprocess_image(image_path):
   img /= 255.0
   return img
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
+
 @app.route('/predict', methods=['POST'])
 def predict():
   if 'image' not in request.files:
-    return jsonify({'error': 'No file part'})
+    return jsonify({'error':400, 'message':   'No file part'}), 400
 
   file = request.files['image']
+
+  if not allowed_file(file.filename):
+    return jsonify({'error': 400, 'message': 'File is not an image'}), 400
+  
   if file.filename == '':
     return jsonify({'error': 400, 'message':  'No selected file'}), 400
 
