@@ -1,4 +1,4 @@
-import os
+import os, traceback
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -26,7 +26,7 @@ def predict():
 
   file = request.files['image']
   if file.filename == '':
-    return jsonify({'error':  'No selected file'})
+    return jsonify({'error': 400, 'message':  'No selected file'}), 400
 
   if file:
     filename = secure_filename(file.filename)
@@ -45,6 +45,16 @@ def predict():
     elif predicted_class == 2:
       predic = "White Scale"
     return jsonify({'predicted_class': predic})
+  
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({'error':404, 'message':str(e)}), 404
+
+@app.errorhandler(Exception)
+def handle_server_error(e):
+    print(f"An error occurred on the server: {e}")
+    traceback.print_exc()
+    return jsonify({'error': 500, 'message': 'An error occurred on the server'}), 500
 
 if __name__ == '__main__':
     if os.getenv("ENVIRONMENT") == 'dev':
