@@ -3,5 +3,5 @@ src/uploads/*
 .env
 
 
-src/data/Date Palm data
-src/data/augmented
+src/model/Date Palm data
+src/model/.ipynb_checkpoints
