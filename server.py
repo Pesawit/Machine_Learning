@@ -1,4 +1,4 @@
-import os, traceback
+import os, traceback, time
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
@@ -37,23 +37,31 @@ def predict():
     return jsonify({'error': 400, 'message':  'No selected file'}), 400
 
   if file:
-    filename = secure_filename(file.filename)
+    timestamp = str(int(time.time()))
+    filename = secure_filename(timestamp + '_' + file.filename)
+    filename = secure_filename(filename)
     filepath = os.path.join('src/uploads', filename)
     file.save(filepath)
+    print('filepath', filepath)
+    try:
+      processed_image = preprocess_image(filepath)
+      prediction = model.predict(processed_image)
 
-   
-    processed_image = preprocess_image(filepath)
-    prediction = model.predict(processed_image)
-
-    predicted_class = np.argmax(prediction)
-    if predicted_class == 0:
-      predic = "Brown Spot"
-    elif predicted_class == 1:
-      predic = "Healthy"
-    elif predicted_class == 2:
-      predic = "White Scale"
-    return jsonify({'predicted_class': predic})
-  
+      predicted_class = np.argmax(prediction)
+      print('predicted_class', predicted_class)
+      if predicted_class == 0:
+        predic = "Brown Spot"
+      elif predicted_class == 1:
+        predic = "Healthy"
+      elif predicted_class == 2:
+        predic = "White Scale"
+      print('predic', predic)
+      os.remove(filepath) 
+      return jsonify({'predicted_class': predic})
+    except Exception as e:
+      os.remove(filepath)  
+      print('Exception', e)
+      return jsonify({'error': 500, 'message': 'Internal server error'}), 500
 @app.errorhandler(404)
 def page_not_found(e):
     return jsonify({'error':404, 'message':str(e)}), 404
