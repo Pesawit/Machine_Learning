@@ -26,15 +26,21 @@ def allowed_file(filename):
 @app.route('/predict', methods=['POST'])
 def predict():
   if 'image' not in request.files:
-    return jsonify({'error':400, 'message':   'No file part'}), 400
+    message = 'No file part'
+    print('message', message)
+    return jsonify({'error':400, 'message':   message}), 400
 
   file = request.files['image']
 
   if not allowed_file(file.filename):
-    return jsonify({'error': 400, 'message': 'File is not an image'}), 400
+    message = 'File is not an image'
+    print('message', message)
+    return jsonify({'error': 400, 'message': message}), 400
   
   if file.filename == '':
-    return jsonify({'error': 400, 'message':  'No selected file'}), 400
+    message = 'No selected file'
+    print('message', message)
+    return jsonify({'error': 400, 'message':  message}), 400
 
   if file:
     timestamp = str(int(time.time()))
