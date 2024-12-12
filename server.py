@@ -1,6 +1,6 @@
 import os, traceback
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(override=True)
 
 from flask import Flask, jsonify, request 
 import tensorflow as tf
