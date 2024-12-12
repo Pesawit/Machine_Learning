@@ -9,7 +9,8 @@ from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
-model = tf.keras.models.load_model('src/model/model.keras')
+print(os.listdir('src/model'))
+model = tf.keras.models.load_model('src/model/model.h5')
 os.makedirs('src/uploads', exist_ok=True)
 def preprocess_image(image_path):
   img = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
