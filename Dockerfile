@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy the requirements file first for better caching
 COPY requirements.txt /app/
 
+RUN git lfs pull
 # Install dependencies using pip and clean up after
 RUN pip install --no-cache-dir -r requirements.txt
 
